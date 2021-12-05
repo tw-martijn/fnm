@@ -58,6 +58,14 @@ pub struct FnmConfig {
         hide_env_values = true
     )]
     pub arch: Arch,
+
+    /// Skip the safe arch check usually applied for macOS.
+    #[structopt(
+        long,
+        global = true,
+        hide_env_values = true
+    )]
+    pub force_arch: bool,
 }
 
 impl Default for FnmConfig {
@@ -68,6 +76,7 @@ impl Default for FnmConfig {
             multishell_path: None,
             log_level: LogLevel::Info,
             arch: Arch::default(),
+            force_arch: false,
         }
     }
 }

@@ -12,6 +12,7 @@ use colored::Colorize;
 use log::debug;
 use snafu::{ensure, OptionExt, ResultExt, Snafu};
 use structopt::StructOpt;
+use std::env;
 
 #[derive(StructOpt, Debug, Default)]
 pub struct Install {
@@ -92,8 +93,12 @@ impl super::command::Command for Install {
             }
         };
 
-        // Automatically swap Apple Silicon to x64 arch for appropriate versions.
-        let safe_arch = get_safe_arch(&config.arch, &version);
+        let safe_arch = if config.force_arch || !env::var_os("FNM_FORCE_ARCH").is_none() {
+            &config.arch
+        } else {
+            // Automatically swap Apple Silicon to x64 arch for appropriate versions.
+            get_safe_arch(&config.arch, &version)
+        };
 
         let version_str = format!("Node {}", &version);
         outln!(config#Info, "Installing {} ({})", version_str.cyan(), safe_arch.to_string());
